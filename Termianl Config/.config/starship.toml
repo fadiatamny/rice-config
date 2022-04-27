@@ -40,42 +40,55 @@ truncation_symbol = "…/"
 # Here is how you can shorten some long paths by text replacement
 # similar to mapped_locations in Oh My Posh:
 [directory.substitutions]
-"Documents" = "🗎 "
+"Documents" = "⛰ "
 "Downloads" = "⤵ "
 "Music" = "📀 "
 "Pictures" = "📷 "
 # Keep in mind that the order matters. For example:
-# "Important Documents" = "  "
+# "Important Documents" = " ⛰⛰ "
 # will not be replaced, because "Documents" was already substituted before.
 # So either put "Important Documents" before "Documents" or use the substituted version:
-# "Important  " = "  "
+# "Important ⛰ " = " ⛰⛰ "
 
 [git_branch]
-symbol = "⛕"
+symbol = "🌱 "
+truncation_length = 24
+truncation_symbol = ""
 style = "bg:#FCA17D"
 format = '[[ $symbol $branch ](bg:#FCA17D)]($style)'
 
+
 [git_status]
+conflicted = "🏳"
+ahead = "🏎💨"
+behind = "😰"
+diverged = "😵"
+up_to_date = "✓"
+untracked = "🤷"
+stashed = "📦"
+modified = "📝"
+staged = '[++\($count\)](green)'
+renamed = "👅"
+deleted = "🗑"
 style = "bg:#FCA17D"
 format = '[[($all_status$ahead_behind )](bg:#FCA17D)]($style)'
 
-[nodejs]
-symbol = "🍩"
-style = "bg:#86BBD8"
-format = '[[ $symbol ($version) ](bg:#86BBD8)]($style)'
+[git_commit]
+commit_hash_length = 4
+tag_symbol = "🔖 "
 
-[rust]
-symbol = ""
-style = "bg:#86BBD8"
-format = '[[ $symbol ($version) ](bg:#86BBD8)]($style)'
 
 [conda]
 disabled = false
 truncation_length = 1
-symbol = "🅒"
+symbol = "🍩"
 style = "bg:#86BBD8"
 ignore_base = true
 format = "[$symbol$environment]($style)"
+
+[python]
+symbol = "👾 "
+pyenv_version_name = true
 
 [time]
 disabled = false
@@ -83,3 +96,9 @@ time_format = "%R" # Hour:Minute Format
 style = "bg:#33658A"
 format = '[[ ฅ^•ﻌ•^ฅ 🕙 $time ](bg:#33658A)]($style)'
 
+[shell]
+fish_indicator = ""
+powershell_indicator = "_"
+unknown_indicator = "mystery shell"
+style = "cyan bold"
+disabled = false
