@@ -20,6 +20,8 @@ alias dcu="docker-compose up -d"
 alias cpuFreq="watch -n 0.1 'cat /proc/cpuinfo | grep MHz'"
 alias ll='ls -alF'
 
+alias ssh-init="~/.ssh/init.sh"
+
 encode () {
   echo "$1" | base64
 }

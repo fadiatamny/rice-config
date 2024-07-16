@@ -30,3 +30,10 @@ Chosen Theme for IDE is [Tokyo Night](enkia.tokyo-night)
 - thefuck command fixer
 
 checkout [this](https://github.com/josean-dev/dev-environment-files/blob/main/.zshrc) and [this](https://www.youtube.com/watch?v=mmqDYw9C30I)
+
+
+# Addons
+- Conda
+    - check [this](https://stackoverflow.com/questions/67380286/anaconda-channel-for-installing-python-2-7) for conda 2.7 on apple silicon
+    - conda config --set changeps1 false
+- NVM

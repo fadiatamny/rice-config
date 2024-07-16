@@ -1,0 +1,6 @@
+[user]
+        name = Fadi Atamny
+        email = fadiatamny@gmail.com
+
+[alias]
+        yolo = !git commit -m \"$(curl -s https://whatthecommit.com/index.txt)\"
