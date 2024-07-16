@@ -23,4 +23,4 @@ Chosen Theme for IDE is [Tokyo Night](enkia.tokyo-night)
 - fzf fuzzy finder
 - thefuck command fixer
 
-checkout [this](https://github.com/josean-dev/dev-environment-files/blob/main/.zshrc)
+checkout [this](https://github.com/josean-dev/dev-environment-files/blob/main/.zshrc) and [this](https://www.youtube.com/watch?v=mmqDYw9C30I)
