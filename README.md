@@ -12,7 +12,13 @@ Powered with [Oh My Posh](https://ohmyposh.dev/)
 
 # VS CODE
 Chosen Theme for IDE is [Tokyo Night](enkia.tokyo-night)
-
+### Shortuts
+- `Ctrl + Shift + \`    Fold all
+- `Ctrl + Alt + \`      Unfold all
+- `Ctrl + Shift + R`    reload window
+- `Ctrl + Alt + -`      Go back
+- `Ctrl + Shift + -`    Go forward
+- `Ctrl + Shift + I`    Format document
 
 # For ZSH
 - zsh-autosuggestions
