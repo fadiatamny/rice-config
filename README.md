@@ -1,11 +1,8 @@
 # rice-config
-Rice configurations of linux enviroment
-
+Rice configurations for cross platform dev enviroment
 
 ### The terminal config
-The terimanl uses 
-[Starship]() in order to stylize it
+[Alacritty](https://github.com/alacritty/alacritty) is the chosen terminal emulator or [Kitty](https://github.com/kovidgoyal/kitty) another good choice
 
-[Zsh]() is the chosen shell
+Powered with [Oh My Posh](https://ohmyposh.dev/)
 
-and [Kitty]() is the graphical terminal
