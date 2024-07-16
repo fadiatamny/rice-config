@@ -51,7 +51,7 @@
             "{{ if gt .Ahead 0 }}p:terminal-blue{{ end }}",
             "{{ if gt .Behind 0 }}p:celeste-blue{{ end }}"
           ],
-          "template": "|| {{ .HEAD }} {{ if or (.Working.Changed) (.Staging.Changed) }}*{{ end }}{{ if gt .Ahead 0 }}↑{{ end }}{{ if gt .Behind 0 }}↓{{ end }}",
+          "template": " || {{ .HEAD }} {{ if or (.Working.Changed) (.Staging.Changed) }}*{{ end }}{{ if gt .Ahead 0 }}↑{{ end }}{{ if gt .Behind 0 }}↓{{ end }}",
           "properties": {
             "fetch_status": true,
             "branch_icon": "\ue725 "
@@ -135,13 +135,13 @@
   "secondary_prompt": {
     "background": "transparent",
     "foreground": "p:terminal-blue",
-    "template": "\u279c "
+    "template": "\u279c  "
   },
   "transient_prompt": {
     "background": "transparent",
     // "background": "p:t-background",
     "foreground": "p:terminal-blue",
-    "template": "\u279c "
+    "template": "\u279c  "
   },
   "final_space": true,
   "version": 2,
