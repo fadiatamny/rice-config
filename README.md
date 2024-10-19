@@ -37,3 +37,4 @@ checkout [this](https://github.com/josean-dev/dev-environment-files/blob/main/.z
     - check [this](https://stackoverflow.com/questions/67380286/anaconda-channel-for-installing-python-2-7) for conda 2.7 on apple silicon
     - conda config --set changeps1 false
 - NVM
+- Go Version Manager gvm 
