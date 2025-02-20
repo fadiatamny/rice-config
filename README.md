@@ -27,3 +27,13 @@ Chosen Theme for IDE is [Tokyo Night](enkia.tokyo-night)
     - conda config --set changeps1 false
 - NVM
 - Go Version Manager gvm
+
+
+### Easy install
+Using symlink and the GNU stow
+
+```sh
+git clone https://github.com/fadiatamny/rice-config.git
+cd rice-config
+stow .
+```
