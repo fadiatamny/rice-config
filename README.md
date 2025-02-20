@@ -1,5 +1,5 @@
 # rice-config
-Rice configurations for cross platform dev enviroment
+Rice configurations for cross platform dev environment
 
 ### The terminal config
 Emulator of choice is [Wezterm](https://wezfurlong.org/wezterm)
@@ -8,7 +8,7 @@ The .zshrc provided should handle installing all needed configurations
 
 # VS CODE
 Chosen Theme for IDE is [Tokyo Night](enkia.tokyo-night)
-### Shortuts
+### Shortcuts
 - `Ctrl + Shift + \`    Fold all
 - `Ctrl + Alt + \`      Unfold all
 - `Ctrl + Shift + R`    reload window
@@ -20,7 +20,6 @@ Chosen Theme for IDE is [Tokyo Night](enkia.tokyo-night)
 - fzf
 - zoxide
 - thefuck
-
 
 # Addons
 - Conda
