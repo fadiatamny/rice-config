@@ -27,6 +27,7 @@ Chosen Theme for IDE is [Tokyo Night](enkia.tokyo-night)
     - conda config --set changeps1 false
 - NVM
 - Go Version Manager gvm
+- lazygit
 
 
 ### Easy install
