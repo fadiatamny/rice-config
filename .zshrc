@@ -23,7 +23,15 @@ zinit light Aloxaf/fzf-tab
 
 zinit snippet OMZP::command-not-found
 
-autoload -U compinit && compinit
+autoload -U compinit
+
+# Rebuild completion cache if needed
+if [[ -n "$ZSH_COMPDUMP" ]]; then
+  compinit -C -d "$ZSH_COMPDUMP"
+else
+  compinit -C
+fi
+
 zinit cdreplay -q
 
 # Oh my posh config
