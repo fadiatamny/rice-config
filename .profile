@@ -4,6 +4,7 @@ alias cpuFreq="watch -n 0.1 'cat /proc/cpuinfo | grep MHz'"
 alias ls="ls --color"
 alias grep='grep --color'
 alias ll='ls -alF'
+alias lgit='lazygit'
 
 alias ssh-init="~/.ssh/init.sh"
 
