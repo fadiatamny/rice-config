@@ -23,6 +23,15 @@ else
     OS="linux"
 fi
 
+# ─── Homebrew Init (macOS) ────────────────────────────────────────────────────
+if [[ "$OS" == "macos" ]]; then
+    if [[ -f /opt/homebrew/bin/brew ]]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [[ -f /usr/local/bin/brew ]]; then
+        eval "$(/usr/local/bin/brew shellenv)"
+    fi
+fi
+
 # ─── Package Manager Detection ───────────────────────────────────────────────
 detect_pkg_manager() {
     if command -v brew &>/dev/null; then
@@ -110,8 +119,41 @@ deploy_configs() {
     success "All configs copied. Restart your terminal to apply changes."
 }
 
+# ─── Install Homebrew (macOS) ─────────────────────────────────────────────────
+install_brew() {
+    if command -v brew &>/dev/null; then
+        success "Homebrew already installed"
+        return 0
+    fi
+
+    info "Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+    # Add brew to PATH for the current session
+    if [[ -f /opt/homebrew/bin/brew ]]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [[ -f /usr/local/bin/brew ]]; then
+        eval "$(/usr/local/bin/brew shellenv)"
+    fi
+
+    if command -v brew &>/dev/null; then
+        success "Homebrew installed"
+    else
+        error "Homebrew installation failed"
+        return 1
+    fi
+}
+
 # ─── Install Shell Dependencies ──────────────────────────────────────────────
 install_shell_deps() {
+    info "Detected OS: ${BOLD}${OS}${RESET}"
+    echo ""
+
+    # Install Homebrew first on macOS if not present
+    if [[ "$OS" == "macos" ]]; then
+        install_brew
+    fi
+
     local pkg_mgr
     pkg_mgr="$(detect_pkg_manager)"
 
@@ -120,7 +162,6 @@ install_shell_deps() {
         return 1
     fi
 
-    info "Detected OS: ${BOLD}${OS}${RESET}"
     info "Package manager: ${BOLD}${pkg_mgr}${RESET}"
     echo ""
     info "Installing shell dependencies..."
