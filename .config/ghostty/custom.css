@@ -1,0 +1,20 @@
+/* Make the title bar (headerbar) transparent */
+headerbar {
+    background: rgba(30, 30, 46, 0.9); /* Your #1e1e2e at 40% opacity */
+    box-shadow: none;
+    border: none;
+    min-height: 0;
+    padding: 0;
+}
+
+/* If you use tabs, make the tab bar match */
+tabbar {
+    background: rgba(30, 30, 46, 0.9); /* Your #1e1e2e at 40% opacity */
+    border: none;
+}
+
+/* Remove the "raised" look if it's there */
+revealer.raised.top-bar {
+    background: transparent;
+    box-shadow: none;
+}
