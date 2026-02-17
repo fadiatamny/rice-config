@@ -1,0 +1,13 @@
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#  Manual Install Requirements
+#
+#  Software that needs to be installed manually — not handled by rice.sh
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Zed                     # https://zed.dev/download
+Ghostty                 # https://ghostty.org/download
+Docker Desktop          # https://www.docker.com/products/docker-desktop/
+Mononoki Nerd Font      # https://github.com/ryanoasis/nerd-fonts/releases
+Miniconda               # https://docs.anaconda.com/miniconda/install/
+NVM                     # https://github.com/nvm-sh/nvm#installing-and-updating
+GVM                     # https://github.com/moovweb/gvm#installing
