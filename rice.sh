@@ -79,6 +79,11 @@ copy_config() {
     local src="$1"
     local dest="$2"
 
+    if [[ -e "$dest" ]]; then
+        success "$dest already exists — skipping"
+        return 0
+    fi
+
     mkdir -p "$(dirname "$dest")"
 
     if [[ -d "$src" ]]; then

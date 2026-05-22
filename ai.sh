@@ -22,6 +22,63 @@ OLLAMA_MODELS=(
     "qwen2.5-coder:14b"
 )
 
+# ─── Python check ─────────────────────────────────────────────────────────────
+check_python() {
+    if command -v python3 &>/dev/null; then
+        success "Python3 found ($(python3 --version))"
+        return 0
+    fi
+
+    error "Python3 is required for uvx / duckduckgo-mcp-server but was not found."
+    echo ""
+
+    local installed=false
+
+    if command -v brew &>/dev/null; then
+        echo -en "  ${BOLD}Install Python3 via Homebrew? [y/N]:${RESET} "
+        read -r choice && echo ""
+        [[ "$choice" =~ ^[Yy]$ ]] && brew install python3 && installed=true
+    elif command -v apt &>/dev/null; then
+        echo -en "  ${BOLD}Install Python3 via apt? [y/N]:${RESET} "
+        read -r choice && echo ""
+        [[ "$choice" =~ ^[Yy]$ ]] && sudo apt-get install -y python3 && installed=true
+    elif command -v pacman &>/dev/null; then
+        echo -en "  ${BOLD}Install Python3 via pacman? [y/N]:${RESET} "
+        read -r choice && echo ""
+        [[ "$choice" =~ ^[Yy]$ ]] && sudo pacman -S --noconfirm python && installed=true
+    else
+        error "No supported package manager found. Install Python3 manually: https://python.org"
+        exit 1
+    fi
+
+    if ! command -v python3 &>/dev/null; then
+        error "Python3 still not found. Re-run this script after installing Python3."
+        exit 1
+    fi
+
+    success "Python3 installed ($(python3 --version))"
+}
+
+# ─── Install uv / uvx ────────────────────────────────────────────────────────
+install_uv() {
+    if command -v uvx &>/dev/null; then
+        success "uvx already installed"
+        return 0
+    fi
+
+    info "Installing uv (provides uvx for duckduckgo-mcp-server)..."
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+
+    # Make uvx available in current session
+    export PATH="$HOME/.local/bin:$PATH"
+
+    if command -v uvx &>/dev/null; then
+        success "uvx installed"
+    else
+        warn "uvx may need a shell restart to be found"
+    fi
+}
+
 # ─── Install Ollama ───────────────────────────────────────────────────────────
 install_ollama() {
     if command -v ollama &>/dev/null; then
@@ -67,6 +124,11 @@ deploy_opencode_configs() {
         return 0
     fi
 
+    if [[ -d "$dest" && -n "$(ls -A "$dest")" ]]; then
+        success "opencode configs already exist — skipping"
+        return 0
+    fi
+
     info "Copying opencode configs..."
     mkdir -p "$dest"
     cp -r "$src/." "$dest/"
@@ -75,10 +137,21 @@ deploy_opencode_configs() {
 
 # ─── Pull Ollama models ───────────────────────────────────────────────────────
 pull_models() {
-    info "Pulling Ollama models..."
+    echo -en "  ${BOLD}Pull Ollama models? (qwen3:8b, qwen2.5-coder:3b, qwen2.5-coder:14b) [y/N]:${RESET} "
+    read -r pull_choice
     echo ""
 
+    if [[ ! "$pull_choice" =~ ^[Yy]$ ]]; then
+        info "Skipping model downloads"
+        return 0
+    fi
+
     for model in "${OLLAMA_MODELS[@]}"; do
+        if ollama list 2>/dev/null | grep -q "^${model}"; then
+            success "$model already pulled"
+            continue
+        fi
+
         info "Pulling ${BOLD}${model}${RESET}..."
         if ollama pull "$model"; then
             success "$model ready"
@@ -95,6 +168,12 @@ main() {
     echo -e "${CYAN}${BOLD}  🤖 AI Environment Setup${RESET}"
     echo ""
 
+    check_python
+    echo ""
+
+    install_uv
+    echo ""
+
     install_ollama
     echo ""
 
@@ -104,15 +183,7 @@ main() {
     deploy_opencode_configs
     echo ""
 
-    echo -en "  ${BOLD}Pull Ollama models? (qwen3:8b, qwen2.5-coder:3b, qwen2.5-coder:14b) [y/N]:${RESET} "
-    read -r pull_choice
-    echo ""
-
-    if [[ "$pull_choice" =~ ^[Yy]$ ]]; then
-        pull_models
-    else
-        info "Skipping model downloads"
-    fi
+    pull_models
 
     echo ""
     success "AI environment ready. Restart your terminal if needed."
