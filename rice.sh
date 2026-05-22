@@ -103,7 +103,6 @@ deploy_configs() {
     copy_config "$RICE_DIR/.gitconfig"                      "$HOME/.gitconfig"
     copy_config "$RICE_DIR/.ssh/init.sh"                    "$HOME/.ssh/init.sh"
     copy_config "$RICE_DIR/.config/oh-my-posh"              "$HOME/.config/oh-my-posh"
-    copy_config "$RICE_DIR/.config/wezterm"                 "$HOME/.config/wezterm"
     copy_config "$RICE_DIR/.config/ghostty"                 "$HOME/.config/ghostty"
 
     if [[ "$OS" == "macos" ]]; then
@@ -184,6 +183,7 @@ show_menu() {
     echo ""
     echo "  1) Deploy configs"
     echo "  2) Install shell dependencies"
+    echo "  3) Setup AI environment"
     echo "  0) Exit"
     echo ""
 }
@@ -198,6 +198,7 @@ main() {
         case "$choice" in
             1) deploy_configs ;;
             2) install_shell_deps ;;
+            3) bash "$RICE_DIR/ai.sh" ;;
             0) info "Bye!"; exit 0 ;;
             *) warn "Invalid option" ;;
         esac
