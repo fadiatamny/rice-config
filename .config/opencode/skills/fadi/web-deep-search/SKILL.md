@@ -67,6 +67,12 @@ Search proactively when:
 - You need to verify facts, get documentation for a library/API, or check pricing
 - The question references a specific website, product, person, or project
 
+## When NOT to Use Shell Commands
+
+- **Do not call `cat`, `ls`, or any shell command after you already have search results in context.** If you have fetched content and gathered enough information to answer, synthesize and respond — don't shell out.
+- Shell tools (`cat`, `curl`, `ls`, etc.) are only appropriate when the user explicitly asks to inspect local files or run a local command, not as a step in the web search workflow.
+- If you are tempted to `cat` something to "see" or "display" content you already retrieved via `fetch_content`, stop — use what is already in context.
+
 ## Limitations
 
 - `search` returns text snippets + URLs. For full content, always `fetch_content` the URL.

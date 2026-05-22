@@ -4,27 +4,30 @@
     "ollama": {
       "name": "Ollama (local)",
       "options": {
-        "baseURL": "http://localhost:11434/v1"
+        "baseURL": "http://localhost:11434/v1",
       },
       "models": {
         "qwen2.5-coder:14b": {
-          "name": "Qwen 2.5 Coder"
+          "name": "Qwen 2.5 Coder",
         },
         "qwen3.5:9b": {
-          "name": "Qwen 3.5"
-        }
-      }
-    }
+          "name": "Qwen 3.5",
+        },
+        "gemma4:e4b": {
+          "name": "Gemma 4",
+        },
+      },
+    },
   },
   "plugin": [],
   "skills": {
-    "paths": ["~/.config/opencode/skills"]
+    "paths": ["~/.config/opencode/skills"],
   },
   "mcp": {
     "ddg-search": {
       "type": "local",
       "command": ["uvx", "duckduckgo-mcp-server"],
-      "enabled": true
-    }
-  }
+      "enabled": true,
+    },
+  },
 }
