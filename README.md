@@ -38,3 +38,13 @@ git clone https://github.com/fadiatamny/rice-config.git
 cd rice-config
 stow .
 ```
+
+### AI environment
+
+Run `./ai.sh` to install the optional AI tools. It can also install
+[Strata](https://github.com/Niko1221/Strata) and the original
+Qwen3.8-Flash-Next model. Strata is opt-in: the script confirms before its
+roughly 70 GB model download, asks where to store model data, and keeps its
+server local-only. On Linux systems with a writable `/mnt`, its default model
+data directory is `/mnt/strata-data`; set `STRATA_REPO_DIR` to change the
+Strata checkout location.
