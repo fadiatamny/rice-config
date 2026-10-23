@@ -5,6 +5,17 @@ else
     _OS="linux"
 fi
 
+# ─── Central Environment ──────────────────────────────────────────────────────
+# Deployed by rice.sh from the repository .env file. Keep secrets out of it.
+RICE_CONFIG_ENV="${RICE_CONFIG_ENV:-$HOME/.config/rice-config/.env}"
+if [[ -r "$RICE_CONFIG_ENV" ]]; then
+    set -a
+    # shellcheck disable=SC1090
+    source "$RICE_CONFIG_ENV"
+    set +a
+fi
+unset RICE_CONFIG_ENV
+
 # ─── Docker Aliases ───────────────────────────────────────────────────────────
 alias dc="docker-compose"
 alias dcu="docker-compose up -d"

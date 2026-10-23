@@ -129,6 +129,7 @@ deploy_configs() {
     info "Copying configs..."
     echo ""
 
+    copy_config "$RICE_DIR/.env"                            "$HOME/.config/rice-config/.env"
     copy_config "$RICE_DIR/.zshrc"                          "$HOME/.zshrc"
     copy_config "$RICE_DIR/.profile"                        "$HOME/.profile"
     copy_config "$RICE_DIR/.gitconfig"                      "$HOME/.gitconfig"

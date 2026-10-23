@@ -15,7 +15,19 @@ warn()    { echo -e "${YELLOW}[WARN]${RESET}  $*"; }
 error()   { echo -e "${RED}[ERR]${RESET}   $*"; }
 
 AI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-STRATA_REPO_DIR="${STRATA_REPO_DIR:-$HOME/Developer/Strata}"
+
+# Central, non-secret configuration for the rice installers. Values in .env are
+# exported so they are also available to the installers and runtimes they start.
+load_env() {
+    local env_file="$AI_DIR/.env"
+
+    [[ -f "$env_file" ]] || return 0
+    # shellcheck disable=SC1090
+    set -a && source "$env_file" && set +a
+}
+
+load_env
+
 UPDATE_MODE=false
 
 usage() {
@@ -45,8 +57,8 @@ OLLAMA_MODELS_DIR="${OLLAMA_MODELS_DIR:-${OLLAMA_MODELS:-$(default_ollama_models
 export OLLAMA_MODELS="$OLLAMA_MODELS_DIR"
 
 # Override with a space-separated list, for example:
-# OLLAMA_MODEL_TAGS="qwen3.8:27b gemma4:e4b" ./ai.sh
-OLLAMA_MODEL_TAGS="${OLLAMA_MODEL_TAGS:-qwen3.8:27b gemma4:e4b}"
+# OLLAMA_MODEL_TAGS="qwen3.8:27b qwen3.5:9b gemma4:e4b" ./ai.sh
+OLLAMA_MODEL_TAGS="${OLLAMA_MODEL_TAGS:-qwen3.8:27b qwen3.5:9b gemma4:e4b}"
 read -r -a OLLAMA_MODEL_LIST <<< "$OLLAMA_MODEL_TAGS"
 
 # ─── Python check ─────────────────────────────────────────────────────────────
@@ -301,52 +313,6 @@ pull_models() {
     done
 }
 
-# ─── Install Strata / Qwen3.8-Flash-Next ─────────────────────────────────────
-install_strata() {
-    echo -en "  ${BOLD}Set up Strata with Qwen3.8-Flash-Next? (~70 GB download) [y/N]:${RESET} "
-    read -r strata_choice
-    echo ""
-
-    if [[ ! "$strata_choice" =~ ^[Yy]$ ]]; then
-        info "Skipping Strata setup"
-        return 0
-    fi
-
-    if ! command -v git &>/dev/null; then
-        error "Git is required to install Strata. Install Git, then re-run this script."
-        return 1
-    fi
-
-    local default_data_dir
-    default_data_dir="${STRATA_DATA_DIR:-$HOME/Strata-data}"
-    if [[ -z "${STRATA_DATA_DIR:-}" && -d /mnt && -w /mnt ]]; then
-        default_data_dir="/mnt/strata-data"
-    fi
-
-    echo -en "  ${BOLD}Strata model-data directory [${default_data_dir}]:${RESET} "
-    read -r strata_data_dir
-    strata_data_dir="${strata_data_dir:-$default_data_dir}"
-
-    if [[ -d "$STRATA_REPO_DIR/.git" ]]; then
-        success "Strata repository already exists at $STRATA_REPO_DIR"
-    elif [[ -e "$STRATA_REPO_DIR" ]]; then
-        error "$STRATA_REPO_DIR already exists and is not a Strata Git repository"
-        return 1
-    else
-        info "Cloning Strata into $STRATA_REPO_DIR..."
-        git clone https://github.com/Niko1221/Strata.git "$STRATA_REPO_DIR"
-    fi
-
-    info "Installing the recommended original Qwen3.8-Flash-Next model."
-    info "The server will remain local-only and will not start automatically."
-    (
-        cd "$STRATA_REPO_DIR"
-        ./setup.sh --yes --family qwen --no-start --data-dir "$strata_data_dir"
-    )
-
-    success "Strata is installed. Start it with: cd $STRATA_REPO_DIR && ./setup.sh --yes"
-}
-
 # ─── Main ─────────────────────────────────────────────────────────────────────
 main() {
     echo ""
@@ -383,10 +349,6 @@ main() {
     echo ""
 
     pull_models
-
-    echo ""
-
-    install_strata
 
     echo ""
     success "AI environment ready. Restart your terminal if needed."

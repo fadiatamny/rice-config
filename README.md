@@ -41,19 +41,16 @@ stow .
 
 ### AI environment
 
-Run `./ai.sh` to install the optional AI tools. It can also install
-[Strata](https://github.com/Niko1221/Strata) and the original
-Qwen3.8-Flash-Next model. Strata is opt-in: the script confirms before its
-roughly 70 GB model download, asks where to store model data, and keeps its
-server local-only. On Linux systems with a writable `/mnt`, its default model
-data directory is `/mnt/strata-data`; set `STRATA_DATA_DIR` to choose the
-model-data directory or `STRATA_REPO_DIR` to change the Strata checkout
-location.
+Run `./ai.sh` to install the optional AI tools.
 
-The Ollama setup pulls `qwen3.8:27b` and `gemma4:e4b`. On Linux with a
-writable `/mnt`, their storage defaults to `/mnt/ollama-models`; the installer
-creates a systemd override so the Ollama service keeps using that location.
-Set `OLLAMA_MODELS_DIR` (or Ollama's native `OLLAMA_MODELS`) to use another
-location, and use `OLLAMA_MODEL_TAGS` to replace the space-separated pull
-list. Existing models are not moved automatically; pull them again after
-changing the model-data directory.
+The Ollama setup reads its model pull list and storage settings from the
+repository's [`.env`](.env) file. On Linux with a writable `/mnt`, model storage
+defaults to `/mnt/ollama-models`; the installer creates a systemd override so
+the Ollama service keeps using that location. Existing models are not moved
+automatically after changing the model-data directory.
+
+`ai.sh` loads the repository's [`.env`](.env) file before applying these
+settings, and `rice.sh` deploys it to `~/.config/rice-config/.env` for login
+shells to load. It centralizes Ollama options. It is tracked configuration:
+keep all API-key fields empty and provide real secrets only through an
+untracked local source.
