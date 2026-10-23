@@ -273,7 +273,7 @@ deploy_ai_development() {
 
         if [[ ! -f "$persona_file" ]]; then
             warn "Missing persona for $agent_name — skipping"
-        elif [[ -e "$target" ]]; then
+        elif [[ -e "$target" && "$UPDATE_MODE" != true ]]; then
             success "OpenCode agent $agent_name already exists — preserving"
         else
             {
