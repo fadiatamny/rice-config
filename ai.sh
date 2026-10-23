@@ -16,12 +16,38 @@ error()   { echo -e "${RED}[ERR]${RESET}   $*"; }
 
 AI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 STRATA_REPO_DIR="${STRATA_REPO_DIR:-$HOME/Developer/Strata}"
+UPDATE_MODE=false
 
-OLLAMA_MODELS=(
-    "qwen3:8b"
-    "qwen2.5-coder:3b"
-    "qwen2.5-coder:14b"
-)
+usage() {
+    echo "Usage: $(basename "$0") [--update]"
+    echo "  --update  Replace managed OpenCode and AI-development configuration only."
+}
+
+for arg in "$@"; do
+    case "$arg" in
+        --update) UPDATE_MODE=true ;;
+        -h|--help) usage; exit 0 ;;
+        *) error "Unknown option: $arg"; usage; exit 1 ;;
+    esac
+done
+
+default_ollama_models_dir() {
+    if [[ -d /mnt && -w /mnt ]]; then
+        printf '%s\n' "/mnt/ollama-models"
+    else
+        printf '%s\n' "$HOME/.ollama/models"
+    fi
+}
+
+# OLLAMA_MODELS is the environment variable read by Ollama itself. Keep the
+# *_DIR name as the user-facing setting so it is not confused with model tags.
+OLLAMA_MODELS_DIR="${OLLAMA_MODELS_DIR:-${OLLAMA_MODELS:-$(default_ollama_models_dir)}}"
+export OLLAMA_MODELS="$OLLAMA_MODELS_DIR"
+
+# Override with a space-separated list, for example:
+# OLLAMA_MODEL_TAGS="qwen3.8:27b gemma4:e4b" ./ai.sh
+OLLAMA_MODEL_TAGS="${OLLAMA_MODEL_TAGS:-qwen3.8:27b gemma4:e4b}"
+read -r -a OLLAMA_MODEL_LIST <<< "$OLLAMA_MODEL_TAGS"
 
 # ─── Python check ─────────────────────────────────────────────────────────────
 check_python() {
@@ -98,6 +124,43 @@ install_ollama() {
     fi
 }
 
+# ─── Configure Ollama model storage ──────────────────────────────────────────
+configure_ollama_model_storage() {
+    export OLLAMA_MODELS="$OLLAMA_MODELS_DIR"
+
+    if [[ "$(uname -s)" != "Linux" ]] || ! command -v systemctl &>/dev/null; then
+        mkdir -p "$OLLAMA_MODELS_DIR"
+        info "Ollama models will be stored in $OLLAMA_MODELS_DIR for this setup run."
+        warn "Set OLLAMA_MODELS=$OLLAMA_MODELS_DIR in the Ollama service environment to persist it."
+        return
+    fi
+
+    if ! systemctl cat ollama.service &>/dev/null; then
+        mkdir -p "$OLLAMA_MODELS_DIR"
+        info "Ollama models will be stored in $OLLAMA_MODELS_DIR for this setup run."
+        warn "No system Ollama service found; persist OLLAMA_MODELS in the service that runs Ollama."
+        return
+    fi
+
+    local service_user service_group
+    service_user="$(systemctl show --property=User --value ollama.service)"
+    service_user="${service_user:-root}"
+    service_group="$(id -gn "$service_user")"
+
+    info "Configuring Ollama model storage at $OLLAMA_MODELS_DIR..."
+    sudo install -d -m 0755 -o "$service_user" -g "$service_group" "$OLLAMA_MODELS_DIR"
+    sudo install -d -m 0755 /etc/systemd/system/ollama.service.d
+    printf '[Service]\nEnvironment="OLLAMA_MODELS=%s"\n' "$OLLAMA_MODELS_DIR" |
+        sudo tee /etc/systemd/system/ollama.service.d/override.conf >/dev/null
+    sudo systemctl daemon-reload
+
+    if systemctl is-active --quiet ollama.service; then
+        sudo systemctl restart ollama.service
+    fi
+
+    success "Ollama models will be stored in $OLLAMA_MODELS_DIR"
+}
+
 # ─── Install opencode ─────────────────────────────────────────────────────────
 install_opencode() {
     if command -v opencode &>/dev/null; then
@@ -115,7 +178,24 @@ install_opencode() {
     fi
 }
 
-# ─── Deploy opencode configs ──────────────────────────────────────────────────
+# ─── Deploy OpenCode configuration ────────────────────────────────────────────
+cleanup_legacy_opencode() {
+    local dest="$1"
+    local agents_dest="$dest/agents"
+
+    # Only remove paths previously managed by this repository.
+    rm -rf "$dest/skills/fadi"
+    rmdir "$dest/skills" 2>/dev/null || true
+    rm -f "$agents_dest/orchestrator.md"
+    rm -f "$agents_dest/architect.md"
+    rm -f "$agents_dest/developer.md"
+    rm -f "$agents_dest/reviewer.md"
+    rm -f "$agents_dest/janitor.md"
+    rm -f "$agents_dest/summarizer.md"
+    rm -f "$agents_dest/requirements-analyst.md"
+    rm -f "$agents_dest/implementation-worker.md"
+}
+
 deploy_opencode_configs() {
     local src="$AI_DIR/.config/opencode"
     local dest="$HOME/.config/opencode"
@@ -125,20 +205,78 @@ deploy_opencode_configs() {
         return 0
     fi
 
-    if [[ -d "$dest" && -n "$(ls -A "$dest")" ]]; then
+    if [[ "$UPDATE_MODE" == true ]]; then
+        info "Updating managed OpenCode configuration..."
+        mkdir -p "$dest"
+        cleanup_legacy_opencode "$dest"
+        cp -r "$src/." "$dest/"
+        success "Managed OpenCode configuration updated"
+    elif [[ -d "$dest" && -n "$(ls -A "$dest")" ]]; then
         success "opencode configs already exist — skipping"
+        return 0
+    else
+        info "Copying opencode configs..."
+        mkdir -p "$dest"
+        cp -r "$src/." "$dest/"
+        success "opencode configs copied to $dest"
+    fi
+}
+
+# ─── Deploy AI development definitions ────────────────────────────────────────
+deploy_ai_development() {
+    local src="$AI_DIR/.ai-development"
+    local dest="$HOME/.ai-development"
+    local agents_src="$dest/agents"
+    local agents_dest="$HOME/.config/opencode/agents"
+    local agent_file persona_file agent_name target
+
+    if [[ ! -d "$src" || -z "$(ls -A "$src")" ]]; then
+        warn "No AI development definitions found in $src — skipping"
         return 0
     fi
 
-    info "Copying opencode configs..."
-    mkdir -p "$dest"
-    cp -r "$src/." "$dest/"
-    success "opencode configs copied to $dest"
+    if [[ "$UPDATE_MODE" == true ]]; then
+        info "Replacing managed AI development definitions..."
+        rm -rf "$dest"
+        mkdir -p "$dest"
+        cp -r "$src/." "$dest/"
+        success "Managed AI development definitions updated"
+    elif [[ -d "$dest" && -n "$(ls -A "$dest")" ]]; then
+        success "AI development definitions already exist — skipping copy"
+    else
+        info "Copying AI development definitions..."
+        mkdir -p "$dest"
+        cp -r "$src/." "$dest/"
+        success "AI development definitions copied to $dest"
+    fi
+
+    mkdir -p "$HOME/.config/opencode"
+    mkdir -p "$agents_dest"
+
+    for agent_file in "$agents_src"/*/AGENT.md; do
+        [[ -f "$agent_file" ]] || continue
+        persona_file="$(dirname "$agent_file")/PERSONA.md"
+        agent_name="$(basename "$(dirname "$agent_file")")"
+        target="$agents_dest/$agent_name.md"
+
+        if [[ ! -f "$persona_file" ]]; then
+            warn "Missing persona for $agent_name — skipping"
+        elif [[ -e "$target" ]]; then
+            success "OpenCode agent $agent_name already exists — preserving"
+        else
+            {
+                cat "$agent_file"
+                echo ""
+                cat "$persona_file"
+            } > "$target"
+            success "Generated OpenCode agent $agent_name"
+        fi
+    done
 }
 
 # ─── Pull Ollama models ───────────────────────────────────────────────────────
 pull_models() {
-    echo -en "  ${BOLD}Pull Ollama models? (qwen3:8b, qwen2.5-coder:3b, qwen2.5-coder:14b) [y/N]:${RESET} "
+    echo -en "  ${BOLD}Pull Ollama models? (${OLLAMA_MODEL_TAGS}) [y/N]:${RESET} "
     read -r pull_choice
     echo ""
 
@@ -147,7 +285,7 @@ pull_models() {
         return 0
     fi
 
-    for model in "${OLLAMA_MODELS[@]}"; do
+    for model in "${OLLAMA_MODEL_LIST[@]}"; do
         if ollama list 2>/dev/null | grep -q "^${model}"; then
             success "$model already pulled"
             continue
@@ -179,8 +317,9 @@ install_strata() {
         return 1
     fi
 
-    local default_data_dir="$HOME/Strata-data"
-    if [[ -d /mnt && -w /mnt ]]; then
+    local default_data_dir
+    default_data_dir="${STRATA_DATA_DIR:-$HOME/Strata-data}"
+    if [[ -z "${STRATA_DATA_DIR:-}" && -d /mnt && -w /mnt ]]; then
         default_data_dir="/mnt/strata-data"
     fi
 
@@ -214,6 +353,14 @@ main() {
     echo -e "${CYAN}${BOLD}  🤖 AI Environment Setup${RESET}"
     echo ""
 
+    if [[ "$UPDATE_MODE" == true ]]; then
+        info "Updating managed AI configuration only..."
+        deploy_opencode_configs
+        deploy_ai_development
+        success "Managed AI configuration updated. OpenCode reloads active configuration automatically."
+        return
+    fi
+
     check_python
     echo ""
 
@@ -223,10 +370,16 @@ main() {
     install_ollama
     echo ""
 
+    configure_ollama_model_storage
+    echo ""
+
     install_opencode
     echo ""
 
     deploy_opencode_configs
+    echo ""
+
+    deploy_ai_development
     echo ""
 
     pull_models

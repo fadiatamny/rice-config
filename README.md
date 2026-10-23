@@ -46,5 +46,14 @@ Run `./ai.sh` to install the optional AI tools. It can also install
 Qwen3.8-Flash-Next model. Strata is opt-in: the script confirms before its
 roughly 70 GB model download, asks where to store model data, and keeps its
 server local-only. On Linux systems with a writable `/mnt`, its default model
-data directory is `/mnt/strata-data`; set `STRATA_REPO_DIR` to change the
-Strata checkout location.
+data directory is `/mnt/strata-data`; set `STRATA_DATA_DIR` to choose the
+model-data directory or `STRATA_REPO_DIR` to change the Strata checkout
+location.
+
+The Ollama setup pulls `qwen3.8:27b` and `gemma4:e4b`. On Linux with a
+writable `/mnt`, their storage defaults to `/mnt/ollama-models`; the installer
+creates a systemd override so the Ollama service keeps using that location.
+Set `OLLAMA_MODELS_DIR` (or Ollama's native `OLLAMA_MODELS`) to use another
+location, and use `OLLAMA_MODEL_TAGS` to replace the space-separated pull
+list. Existing models are not moved automatically; pull them again after
+changing the model-data directory.

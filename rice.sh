@@ -15,6 +15,20 @@ warn()    { echo -e "${YELLOW}[WARN]${RESET}  $*"; }
 error()   { echo -e "${RED}[ERR]${RESET}   $*"; }
 
 RICE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+UPDATE_MODE=false
+
+usage() {
+    echo "Usage: $(basename "$0") [--update]"
+    echo "  --update  Replace managed rice and AI-development configuration only."
+}
+
+for arg in "$@"; do
+    case "$arg" in
+        --update) UPDATE_MODE=true ;;
+        -h|--help) usage; exit 0 ;;
+        *) error "Unknown option: $arg"; usage; exit 1 ;;
+    esac
+done
 
 # ─── OS Detection ─────────────────────────────────────────────────────────────
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -79,7 +93,19 @@ copy_config() {
     local src="$1"
     local dest="$2"
 
-    if [[ -e "$dest" ]]; then
+    if [[ "$UPDATE_MODE" == true ]]; then
+        info "Updating $dest"
+        if [[ -d "$src" ]]; then
+            rm -rf "$dest"
+            mkdir -p "$(dirname "$dest")"
+            cp -r "$src" "$dest"
+        else
+            mkdir -p "$(dirname "$dest")"
+            cp -f "$src" "$dest"
+        fi
+        success "$dest"
+        return 0
+    elif [[ -e "$dest" ]]; then
         success "$dest already exists — skipping"
         return 0
     fi
@@ -194,6 +220,14 @@ show_menu() {
 }
 
 main() {
+    if [[ "$UPDATE_MODE" == true ]]; then
+        info "Updating managed rice and AI configuration..."
+        deploy_configs
+        bash "$RICE_DIR/ai.sh" --update
+        success "Managed configuration updated."
+        return
+    fi
+
     while true; do
         show_menu
         echo -en "  ${BOLD}Select an option:${RESET} "
