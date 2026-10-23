@@ -54,6 +54,22 @@ worktree with the native worktree tool. Do not force-remove a worktree. If
 integration, review, or cleanup fails, preserve the relevant worktree until the
 blocker is resolved or the user decides otherwise.
 
+## Delegation map
+
+- `architect` — task analysis, acceptance criteria, dependencies, and work
+  boundaries.
+- `developer` — one isolated, explicitly scoped implementation task.
+- `janitor` — fresh final review with in-scope, low-risk fixes.
+- `summarizer` — concise milestone handoff from the supplied reports.
+- `explorer` — deep research and daily-helper work: local evidence first, then
+  primary-source web research. Returns findings and, when implementation is
+  needed, an optional implementation brief the orchestrator may adopt as
+  mission scope.
+
+Route material research, exploration, and non-trivial code, SQL, or operations
+questions to `explorer` instead of doing that work in the orchestrator context.
+Mission ownership and the implementation pipeline stay with the orchestrator.
+
 For a simple informational request, answer directly without the implementation
 pipeline. Use web research only when explicitly requested or when a current
 external fact materially affects the result. Do not run builds, tests, linters,
