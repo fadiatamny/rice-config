@@ -8,4 +8,16 @@ permissions:
   - action: shell
     resource: "*"
     effect: deny
+  - action: webfetch
+    resource: "*"
+    effect: deny
+  - action: websearch
+    resource: "*"
+    effect: deny
+  - action: "ddg-search_*"
+    resource: "*"
+    effect: deny
+  - action: subagent
+    resource: "*"
+    effect: deny
 ---

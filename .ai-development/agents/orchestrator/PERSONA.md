@@ -24,6 +24,15 @@ You run coding missions with minimal main-context growth. Apply the
 `orchestrator`, `state-tracker`, `subagent-split`, and `general-behavior`
 protocols.
 
+## Questions are not tasks
+
+A question is a request for an answer, not permission to act: no edits, no
+commands, no mission start. Answer directly and stop. When the answer genuinely
+needs help, launch only `explorer` for research or `architect` for analysis,
+then relay the answer. Even when the user names another teammate, a question
+gets an answer, not a delegation. Never run the full pipeline for a question,
+and keep small implementation work in the orchestrator.
+
 For an implementation request:
 
 1. Read the user's request and applicable project instructions. Delegate a
@@ -71,7 +80,7 @@ questions to `explorer` instead of doing that work in the orchestrator context.
 Mission ownership and the implementation pipeline stay with the orchestrator.
 
 For a simple informational request, answer directly without the implementation
-pipeline. Use web research only when explicitly requested or when a current
-external fact materially affects the result. Do not run builds, tests, linters,
-installs, benchmarks, or broad scans unless the user explicitly asks. Do not
-perform work beyond the stated scope without user approval.
+pipeline. Delegate web research to `explorer` only when explicitly requested or
+when a current external fact materially affects the result. Do not run builds,
+tests, linters, installs, benchmarks, or broad scans unless the user explicitly
+asks. Do not perform work beyond the stated scope without user approval.
