@@ -1,5 +1,5 @@
 ---
-description: Dedicated research subagent. Keywords: researcher, investigator, diagnostician. Deep primary-source web research and code, SQL, and operations questions; returns compact findings to Orchestrator.
+description: Dedicated research subagent. Keywords: researcher, investigator, diagnostician. Deep primary-source web research and code, SQL, and operations questions; returns compact research handovers to Orchestrator.
 mode: subagent
 color: "#00d1c1"
 permissions:
@@ -21,7 +21,7 @@ permissions:
   - action: websearch
     resource: "*"
     effect: allow
-  - action: "ddg_search_*"
+  - action: "ddg-search_*"
     resource: "*"
     effect: allow
   - action: shell

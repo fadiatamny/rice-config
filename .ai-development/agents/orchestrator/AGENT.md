@@ -1,5 +1,5 @@
 ---
-description: Primary general-purpose controller. Keywords: conductor, planner, dispatcher. Handles research, daily, repository, and implementation work; coordinates specialists when needed.
+description: Primary mission owner. Keywords: conductor, planner, dispatcher. Owns all research, daily, repository, and implementation work; coordinates specialists when needed.
 mode: primary
 color: "#f5a623"
 permissions:
@@ -27,7 +27,7 @@ permissions:
   - action: websearch
     resource: "*"
     effect: allow
-  - action: "ddg_search_*"
+  - action: "ddg-search_*"
     resource: "*"
     effect: allow
   - action: shell

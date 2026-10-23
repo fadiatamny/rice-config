@@ -16,18 +16,22 @@ Chosen Theme for IDE is [Tokyo Night](enkia.tokyo-night)
 - `Ctrl + Shift + -`    Go forward
 - `Ctrl + Shift + I`    Format document
 
-# Necessities to install
+# Managed shell dependencies
+
+`rice.sh` installs:
+
+- git
 - fzf
 - zoxide
-- thefuck
+- eza
+- lazygit
 
-# Addons
+# Optional additions
 - Conda
     - check [this](https://stackoverflow.com/questions/67380286/anaconda-channel-for-installing-python-2-7) for conda 2.7 on apple silicon
     - conda config --set changeps1 false
 - NVM
 - Go Version Manager gvm
-- lazygit
 
 
 ### Easy install
@@ -55,14 +59,18 @@ shells to load. It centralizes Ollama options. It is tracked configuration:
 keep all API-key fields empty and provide real secrets only through an
 untracked local source.
 
-`ai.sh --update` deploys the managed OpenCode config and the agent/skill tree.
+On a first run, `ai.sh` adds only missing repository-managed OpenCode and
+AI-development entries, preserving files already present in their destination
+directories. `ai.sh --update` replaces the repository-managed
+`~/.ai-development` tree and updates repository-managed OpenCode files; invoke
+it only when that replacement is intended.
+
 `orchestrator` is the default primary agent and owns general, daily, repository,
 and implementation work. It researches directly or delegates focused,
-independent investigation to `explorer`, which returns compact evidence for the
-next decision. Explorer can fan out only to focused Explorer subagents, make an
-unmistakably small in-scope repair when assigned by Orchestrator, and does not
-own the implementation pipeline. It is a subagent and cannot be selected as a
-primary chat agent.
+independent investigation to `explorer`, which returns compact research
+handovers for the next decision. Explorer can fan out only to focused Explorer
+subagents, does not own the implementation pipeline, and cannot be selected as
+a primary chat agent.
 
 Agents live in `.ai-development/agents/<name>/` (`AGENT.md` + `PERSONA.md`);
 skills live in `.ai-development/skills/<name>/SKILL.md`; universal rules live in

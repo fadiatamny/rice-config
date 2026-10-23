@@ -45,19 +45,14 @@
 font-family = Mononoki Nerd Font
 theme = catppuccin-mocha.conf
 
-
-
 # Transparency
 background-opacity = 0.9
 background-blur-radius = 20
 background-blur = true
 
-
 # Topbar changes
-window-decoration = true
 gtk-custom-css = ~/.config/ghostty/custom.css
 window-decoration = client
-
 
 # padding
 window-padding-x = 15

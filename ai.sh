@@ -26,8 +26,6 @@ load_env() {
     set -a && source "$env_file" && set +a
 }
 
-load_env
-
 UPDATE_MODE=false
 
 usage() {
@@ -42,6 +40,12 @@ for arg in "$@"; do
         *) error "Unknown option: $arg"; usage; exit 1 ;;
     esac
 done
+
+# Configuration-only updates do not install or configure runtimes, so they do
+# not need the environment file.
+if [[ "$UPDATE_MODE" != true ]]; then
+    load_env
+fi
 
 default_ollama_models_dir() {
     if [[ -d /mnt && -w /mnt ]]; then
@@ -223,14 +227,11 @@ deploy_opencode_configs() {
         cleanup_legacy_opencode "$dest"
         cp -r "$src/." "$dest/"
         success "Managed OpenCode configuration updated"
-    elif [[ -d "$dest" && -n "$(ls -A "$dest")" ]]; then
-        success "opencode configs already exist — skipping"
-        return 0
     else
-        info "Copying opencode configs..."
+        info "Adding missing OpenCode configs..."
         mkdir -p "$dest"
-        cp -r "$src/." "$dest/"
-        success "opencode configs copied to $dest"
+        cp -R -n "$src/." "$dest/"
+        success "Missing OpenCode configs added to $dest"
     fi
 }
 
@@ -253,13 +254,11 @@ deploy_ai_development() {
         mkdir -p "$dest"
         cp -r "$src/." "$dest/"
         success "Managed AI development definitions updated"
-    elif [[ -d "$dest" && -n "$(ls -A "$dest")" ]]; then
-        success "AI development definitions already exist — skipping copy"
     else
-        info "Copying AI development definitions..."
+        info "Adding missing AI development definitions..."
         mkdir -p "$dest"
-        cp -r "$src/." "$dest/"
-        success "AI development definitions copied to $dest"
+        cp -R -n "$src/." "$dest/"
+        success "Missing AI development definitions added to $dest"
     fi
 
     mkdir -p "$HOME/.config/opencode"

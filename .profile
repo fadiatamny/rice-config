@@ -17,8 +17,8 @@ fi
 unset RICE_CONFIG_ENV
 
 # ─── Docker Aliases ───────────────────────────────────────────────────────────
-alias dc="docker-compose"
-alias dcu="docker-compose up -d"
+alias dc="docker compose"
+alias dcu="docker compose up -d"
 
 # ─── CPU Frequency (Linux only) ──────────────────────────────────────────────
 if [[ "$_OS" == "linux" ]]; then
@@ -61,27 +61,49 @@ decode () {
 
 # ─── Kill Port ────────────────────────────────────────────────────────────────
 kill_port() {
-    local port="$1"
-    local process=""
+    local port=""
+    local process="node"
+    local pids
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
             -n|--name)
+                if [[ $# -lt 2 || -z "$2" ]]; then
+                    echo "Usage: kill_port <port> [--name <process>]" >&2
+                    return 2
+                fi
                 process="$2"
                 shift 2
                 ;;
+            -*)
+                echo "Usage: kill_port <port> [--name <process>]" >&2
+                return 2
+                ;;
             *)
+                if [[ -n "$port" ]]; then
+                    echo "Usage: kill_port <port> [--name <process>]" >&2
+                    return 2
+                fi
                 port="$1"
                 shift
                 ;;
         esac
     done
 
-    process="${process:-node}"
+    if ! [[ "$port" =~ ^[0-9]+$ ]] || (( port < 1 || port > 65535 )); then
+        echo "ERROR: Port must be a number between 1 and 65535." >&2
+        return 2
+    fi
 
-    echo "Killing ${process} on port ${port}."
+    pids="$(lsof -ti -c "$process" -iTCP:"$port" -sTCP:LISTEN 2>/dev/null || true)"
+    if [[ -z "$pids" ]]; then
+        echo "No ${process} process is listening on port ${port}."
+        return 0
+    fi
 
-    lsof -i :"$port" | grep "$process" | awk '{print $2}' | xargs kill -9
+    echo "Stopping ${process} on port ${port}."
+    # lsof emits numeric PIDs separated by whitespace.
+    kill $pids
 }
 
 # ─── Set Brightness (Linux only, requires ddcutil) ───────────────────────────

@@ -42,11 +42,13 @@
     // Select any connected OpenCode web provider and fail over on rate limits.
     "provider": "random",
   },
+  // DDG MCP is available to permitted agents without requiring Code Mode.
   "mcp": {
     "servers": {
       "ddg-search": {
         "type": "local",
         "command": ["uvx", "duckduckgo-mcp-server"],
+        "codemode": false,
         "disabled": false,
       },
     },
