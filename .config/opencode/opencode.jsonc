@@ -60,8 +60,7 @@
       },
     },
   },
-  // OpenCode discovers locally installed Ollama models automatically.
-  // Keep model choice at the session or agent level until a stable library is chosen.
+  // OpenCode discovers additional locally installed Ollama models automatically.
   "skills": ["~/.ai-development/skills"],
   "websearch": {
     // Select any connected OpenCode web provider and fail over on rate limits.
