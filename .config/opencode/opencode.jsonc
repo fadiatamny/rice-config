@@ -1,15 +1,26 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "default_agent": "explorer",
+  "default_agent": "orchestrator",
   "compaction": {
     // Compact only when explicitly requested at a user-defined milestone.
     "auto": false,
+  },
+  "experimental": {
+    // Allows Orchestrator → Explorer → focused Explorer research handoffs.
+    "subagent_depth": 2,
   },
   // Global rules are only the safety floor. Agent-specific capabilities live in
   // ~/.ai-development/agents/<name>/AGENT.md.
   "permissions": [
     { "action": "shell", "resource": "*", "effect": "ask" },
     { "action": "shell", "resource": "git push *", "effect": "deny" },
+    { "action": "shell", "resource": "git -C * push*", "effect": "deny" },
+    { "action": "shell", "resource": "git --git-dir* push*", "effect": "deny" },
+    { "action": "shell", "resource": "rm -rf*", "effect": "deny" },
+    { "action": "shell", "resource": "rm -fr*", "effect": "deny" },
+    { "action": "shell", "resource": "rm -r*", "effect": "deny" },
+    { "action": "shell", "resource": "rm -R*", "effect": "deny" },
+    { "action": "shell", "resource": "*rg *--pre*", "effect": "deny" },
   ],
   "providers": {
     "ollama": {
@@ -19,6 +30,12 @@
       },
     },
   },
+  // Ambient definitions, injected into every agent's system prompt by path.
+  // BEHAVIOR.md holds universal rules. Add CODING_STANDARDS.md here once it has
+  // content; an empty file still injects a path header.
+  "instructions": [
+    "~/.ai-development/BEHAVIOR.md",
+  ],
   // OpenCode discovers additional locally installed Ollama models automatically.
   "skills": ["~/.ai-development/skills"],
   "websearch": {

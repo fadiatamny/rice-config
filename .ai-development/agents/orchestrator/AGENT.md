@@ -1,6 +1,7 @@
 ---
-description: Mission coordinator. Keywords: conductor, planner, dispatcher. Clarifies, delegates, reviews, and reports concise milestones.
+description: Primary general-purpose controller. Keywords: conductor, planner, dispatcher. Handles research, daily, repository, and implementation work; coordinates specialists when needed.
 mode: primary
+color: "#f5a623"
 permissions:
   - action: subagent
     resource: "*"
@@ -22,13 +23,13 @@ permissions:
     effect: allow
   - action: webfetch
     resource: "*"
-    effect: deny
+    effect: allow
   - action: websearch
     resource: "*"
-    effect: deny
-  - action: "ddg-search_*"
+    effect: allow
+  - action: "ddg_search_*"
     resource: "*"
-    effect: deny
+    effect: allow
   - action: shell
     resource: "pwd"
     effect: allow
@@ -37,6 +38,72 @@ permissions:
     effect: allow
   - action: shell
     resource: "rg *"
+    effect: allow
+  - action: shell
+    resource: "grep *"
+    effect: allow
+  - action: shell
+    resource: "head *"
+    effect: allow
+  - action: shell
+    resource: "tail *"
+    effect: allow
+  - action: shell
+    resource: "wc *"
+    effect: allow
+  - action: shell
+    resource: "diff *"
+    effect: allow
+  - action: shell
+    resource: "stat *"
+    effect: allow
+  - action: shell
+    resource: "basename *"
+    effect: allow
+  - action: shell
+    resource: "dirname *"
+    effect: allow
+  - action: shell
+    resource: "uniq *"
+    effect: allow
+  - action: shell
+    resource: "cut *"
+    effect: allow
+  - action: shell
+    resource: "tr *"
+    effect: allow
+  - action: shell
+    resource: "nl *"
+    effect: allow
+  - action: shell
+    resource: "file *"
+    effect: allow
+  - action: shell
+    resource: "realpath *"
+    effect: allow
+  - action: shell
+    resource: "readlink *"
+    effect: allow
+  - action: shell
+    resource: "printf *"
+    effect: allow
+  - action: shell
+    resource: "date *"
+    effect: allow
+  - action: shell
+    resource: "uname *"
+    effect: allow
+  - action: shell
+    resource: "jq *"
+    effect: allow
+  - action: shell
+    resource: "ps *"
+    effect: allow
+  - action: shell
+    resource: "git grep *"
+    effect: allow
+  - action: shell
+    resource: "git blame *"
     effect: allow
   - action: shell
     resource: "git status *"
@@ -98,4 +165,44 @@ permissions:
   - action: shell
     resource: "cat *.toml"
     effect: allow
+  - action: shell
+    resource: "git push*"
+    effect: deny
+  - action: shell
+    resource: "*&&*git push*"
+    effect: deny
+  - action: shell
+    resource: "*;*git push*"
+    effect: deny
+  - action: shell
+    resource: "*|*git push*"
+    effect: deny
+  - action: shell
+    resource: "rm -rf*"
+    effect: deny
+  - action: shell
+    resource: "rm -fr*"
+    effect: deny
+  - action: shell
+    resource: "*&&*rm -rf*"
+    effect: deny
+  - action: shell
+    resource: "*;*rm -rf*"
+    effect: deny
+  - action: shell
+    resource: "*|*rm -rf*"
+    effect: deny
+  - action: shell
+    resource: "*&&*rm -fr*"
+    effect: deny
+  - action: shell
+    resource: "*;*rm -fr*"
+    effect: deny
+  - action: shell
+    resource: "*|*rm -fr*"
+    effect: deny
+  - action: shell
+    resource: "*rg *--pre*"
+    effect: deny
+
 ---

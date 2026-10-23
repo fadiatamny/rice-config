@@ -54,3 +54,22 @@ settings, and `rice.sh` deploys it to `~/.config/rice-config/.env` for login
 shells to load. It centralizes Ollama options. It is tracked configuration:
 keep all API-key fields empty and provide real secrets only through an
 untracked local source.
+
+`ai.sh --update` deploys the managed OpenCode config and the agent/skill tree.
+`orchestrator` is the default primary agent and owns general, daily, repository,
+and implementation work. It researches directly or delegates focused,
+independent investigation to `explorer`, which returns compact evidence for the
+next decision. Explorer can fan out only to focused Explorer subagents, make an
+unmistakably small in-scope repair when assigned by Orchestrator, and does not
+own the implementation pipeline. It is a subagent and cannot be selected as a
+primary chat agent.
+
+Agents live in `.ai-development/agents/<name>/` (`AGENT.md` + `PERSONA.md`);
+skills live in `.ai-development/skills/<name>/SKILL.md`; universal rules live in
+`.ai-development/BEHAVIOR.md`.
+
+Only `orchestrator` and `developer` keep Code Mode (`execute`), because the
+native worktree and session tools live there. Research, planning, review, and
+summarization agents deny it, which also keeps their tool catalogs small.
+Subagents other than `explorer` also deny `question`, so they report blockers
+through `handover` instead of prompting the user directly.

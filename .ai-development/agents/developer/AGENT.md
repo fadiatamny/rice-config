@@ -1,8 +1,21 @@
 ---
 description: Focused developer. Keywords: builder, implementer, worker. Implements one isolated, explicitly scoped task with fresh file context.
 mode: subagent
+color: "#3ddc84"
 permissions:
   - action: subagent
+    resource: "*"
+    effect: deny
+  - action: question
+    resource: "*"
+    effect: deny
+  - action: "opencode_models"
+    resource: "*"
+    effect: deny
+  - action: "opencode_list_mcp_resources"
+    resource: "*"
+    effect: deny
+  - action: "opencode_read_mcp_resource"
     resource: "*"
     effect: deny
   - action: shell
@@ -13,6 +26,72 @@ permissions:
     effect: allow
   - action: shell
     resource: "rg *"
+    effect: allow
+  - action: shell
+    resource: "grep *"
+    effect: allow
+  - action: shell
+    resource: "head *"
+    effect: allow
+  - action: shell
+    resource: "tail *"
+    effect: allow
+  - action: shell
+    resource: "wc *"
+    effect: allow
+  - action: shell
+    resource: "diff *"
+    effect: allow
+  - action: shell
+    resource: "stat *"
+    effect: allow
+  - action: shell
+    resource: "basename *"
+    effect: allow
+  - action: shell
+    resource: "dirname *"
+    effect: allow
+  - action: shell
+    resource: "uniq *"
+    effect: allow
+  - action: shell
+    resource: "cut *"
+    effect: allow
+  - action: shell
+    resource: "tr *"
+    effect: allow
+  - action: shell
+    resource: "nl *"
+    effect: allow
+  - action: shell
+    resource: "file *"
+    effect: allow
+  - action: shell
+    resource: "realpath *"
+    effect: allow
+  - action: shell
+    resource: "readlink *"
+    effect: allow
+  - action: shell
+    resource: "printf *"
+    effect: allow
+  - action: shell
+    resource: "date *"
+    effect: allow
+  - action: shell
+    resource: "uname *"
+    effect: allow
+  - action: shell
+    resource: "jq *"
+    effect: allow
+  - action: shell
+    resource: "ps *"
+    effect: allow
+  - action: shell
+    resource: "git grep *"
+    effect: allow
+  - action: shell
+    resource: "git blame *"
     effect: allow
   - action: shell
     resource: "git status *"
@@ -74,4 +153,44 @@ permissions:
   - action: shell
     resource: "cat *.toml"
     effect: allow
+  - action: shell
+    resource: "git push*"
+    effect: deny
+  - action: shell
+    resource: "*&&*git push*"
+    effect: deny
+  - action: shell
+    resource: "*;*git push*"
+    effect: deny
+  - action: shell
+    resource: "*|*git push*"
+    effect: deny
+  - action: shell
+    resource: "rm -rf*"
+    effect: deny
+  - action: shell
+    resource: "rm -fr*"
+    effect: deny
+  - action: shell
+    resource: "*&&*rm -rf*"
+    effect: deny
+  - action: shell
+    resource: "*;*rm -rf*"
+    effect: deny
+  - action: shell
+    resource: "*|*rm -rf*"
+    effect: deny
+  - action: shell
+    resource: "*&&*rm -fr*"
+    effect: deny
+  - action: shell
+    resource: "*;*rm -fr*"
+    effect: deny
+  - action: shell
+    resource: "*|*rm -fr*"
+    effect: deny
+  - action: shell
+    resource: "*rg *--pre*"
+    effect: deny
+
 ---
