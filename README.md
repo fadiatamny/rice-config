@@ -16,18 +16,22 @@ Chosen Theme for IDE is [Tokyo Night](enkia.tokyo-night)
 - `Ctrl + Shift + -`    Go forward
 - `Ctrl + Shift + I`    Format document
 
-# Necessities to install
+# Managed shell dependencies
+
+`rice.sh` installs:
+
+- git
 - fzf
 - zoxide
-- thefuck
+- eza
+- lazygit
 
-# Addons
+# Optional additions
 - Conda
     - check [this](https://stackoverflow.com/questions/67380286/anaconda-channel-for-installing-python-2-7) for conda 2.7 on apple silicon
     - conda config --set changeps1 false
 - NVM
 - Go Version Manager gvm
-- lazygit
 
 
 ### Easy install
@@ -41,10 +45,39 @@ stow .
 
 ### AI environment
 
-Run `./ai.sh` to install the optional AI tools. It can also install
-[Strata](https://github.com/Niko1221/Strata) and the original
-Qwen3.8-Flash-Next model. Strata is opt-in: the script confirms before its
-roughly 70 GB model download, asks where to store model data, and keeps its
-server local-only. On Linux systems with a writable `/mnt`, its default model
-data directory is `/mnt/strata-data`; set `STRATA_REPO_DIR` to change the
-Strata checkout location.
+Run `./ai.sh` to install the optional AI tools.
+
+The Ollama setup reads its model pull list and storage settings from the
+repository's [`.env`](.env) file. On Linux with a writable `/mnt`, model storage
+defaults to `/mnt/ollama-models`; the installer creates a systemd override so
+the Ollama service keeps using that location. Existing models are not moved
+automatically after changing the model-data directory.
+
+`ai.sh` loads the repository's [`.env`](.env) file before applying these
+settings, and `rice.sh` deploys it to `~/.config/rice-config/.env` for login
+shells to load. It centralizes Ollama options. It is tracked configuration:
+keep all API-key fields empty and provide real secrets only through an
+untracked local source.
+
+On a first run, `ai.sh` adds only missing repository-managed OpenCode and
+AI-development entries, preserving files already present in their destination
+directories. `ai.sh --update` replaces the repository-managed
+`~/.ai-development` tree and updates repository-managed OpenCode files; invoke
+it only when that replacement is intended.
+
+`orchestrator` is the default primary agent and owns general, daily, repository,
+and implementation work. It researches directly or delegates focused,
+independent investigation to `explorer`, which returns compact research
+handovers for the next decision. Explorer can fan out only to focused Explorer
+subagents, does not own the implementation pipeline, and cannot be selected as
+a primary chat agent.
+
+Agents live in `.ai-development/agents/<name>/` (`AGENT.md` + `PERSONA.md`);
+skills live in `.ai-development/skills/<name>/SKILL.md`; universal rules live in
+`.ai-development/BEHAVIOR.md`.
+
+Only `orchestrator` and `developer` keep Code Mode (`execute`), because the
+native worktree and session tools live there. Research, planning, review, and
+summarization agents deny it, which also keeps their tool catalogs small.
+Subagents other than `explorer` also deny `question`, so they report blockers
+through `handover` instead of prompting the user directly.

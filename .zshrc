@@ -99,8 +99,8 @@ fi
 export PATH="$HOME/.local/bin:$PATH"
 
 # ─── SSH Agent ────────────────────────────────────────────────────────────────
-# macOS manages ssh-agent via Keychain, only start manually on Linux
-if [[ "$_OS" == "linux" ]]; then
+# macOS manages ssh-agent via Keychain; on Linux, reuse an existing agent.
+if [[ "$_OS" == "linux" && -z "${SSH_AUTH_SOCK:-}" ]]; then
     eval "$(ssh-agent -s)" > /dev/null
 fi
 
