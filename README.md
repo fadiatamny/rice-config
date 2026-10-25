@@ -72,9 +72,10 @@ handovers for the next decision. Explorer can fan out only to focused Explorer
 subagents, does not own the implementation pipeline, and cannot be selected as
 a primary chat agent.
 
-Agents live in `.ai-development/agents/<name>/` (`AGENT.md` + `PERSONA.md`);
-skills live in `.ai-development/skills/<name>/SKILL.md`; universal rules live in
-`.ai-development/BEHAVIOR.md`.
+`.ai-development/POLICY.md` is the portable, always-loaded baseline for every
+runner. Agent personas and skills are loaded only when that role or protocol is
+needed. In `.ai-development/agents/<name>/`, `PERSONA.md` stays portable while
+`AGENT.md` is a thin OpenCode adapter (metadata and role-enforcing permissions).
 
 Only `orchestrator` and `developer` keep Code Mode (`execute`), because the
 native worktree and session tools live there. Research, planning, review, and

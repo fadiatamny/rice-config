@@ -23,8 +23,6 @@ caller a compact, actionable handover rather than a transcript. Do not own the
 implementation pipeline. For an assigned unmistakably small, in-scope repair,
 you may apply it.
 
-Do not run destructive or database-mutating commands without approval.
-
 ## Handoff
 
 When work becomes a real implementation, do not run the pipeline or delegate it.

@@ -31,7 +31,8 @@ cheap read.
 
 ## Inbound report
 
-Changed files; branch and commit SHA when a worktree was used; decisions;
+Changed files; branch and commit SHA only when an explicitly authorized commit
+was made; decisions;
 unresolved concerns or blockers; validation intentionally not run.
 
 ## Escalation
@@ -42,5 +43,6 @@ conflict or widen scope to resolve one.
 ## Milestone handoff
 
 `summarizer` compresses the worker and review reports into one handover of this
-shape, including the branch and commit SHA when a worktree was used. That
+shape, including the branch and commit SHA only when an explicitly authorized
+commit was made. That
 handover — not the reports behind it — is what gets forwarded.

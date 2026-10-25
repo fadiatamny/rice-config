@@ -21,14 +21,12 @@ description: The development pipeline for any implementation request. Load befor
 5. Parallelize only tasks with no dependency, no overlapping files, no shared
    configuration, and no integration contract. Never split work whose delegation
    costs more context than it saves.
-6. Use a worktree only if the runner exposes the native worktree tools; never
-   emulate one through shell. Create it and pass its directory and branch in the
-   worker's brief; the worker moves its own session with `session_move` before
-   editing. Never move the orchestrator's own session. Keep work sequential
-   otherwise.
-7. Dispatch each `developer` with a `handover` brief. A worktree worker makes one
-   local WIP commit on its worktree branch and reports the branch, commit SHA,
-   and worktree directory. Never push.
+6. Use a worktree only when the runner exposes native worktree tools; never
+   emulate one through shell. Otherwise keep work sequential in the shared
+   workspace. A worker moves only its own session with `session_move` before
+   editing; never move the orchestrator's session.
+7. Dispatch each `developer` with a `handover` brief. Report its branch,
+   worktree directory, and any authorized commit SHA.
 8. After implementation, use `janitor` only when independent review materially
    reduces risk: behavioral or multi-file changes, permissions/configuration,
    parallel work, risky changes, or nontrivial Developer work. For a trivial,
