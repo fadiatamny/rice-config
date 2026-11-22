@@ -17,6 +17,9 @@
       "settings": {
         "baseURL": "http://localhost:11434/v1",
       },
+      "models": {
+        "mimo-v2.6:9b": { "name": "MiMo v2.6 9B" },
+      },
     },
   },
   // The portable ambient policy is the only always-injected instruction.
@@ -36,6 +39,11 @@
         "type": "local",
         "command": ["uvx", "duckduckgo-mcp-server"],
         "codemode": false,
+        "disabled": false,
+      },
+      "playwright": {
+        "type": "local",
+        "command": ["npx", "-y", "@playwright/mcp@latest", "--isolated"],
         "disabled": false,
       },
     },
