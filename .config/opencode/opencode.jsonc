@@ -52,6 +52,11 @@
         "command": ["npx", "-y", "@playwright/mcp@latest", "--isolated"],
         "disabled": false,
       },
+      "playwright-headless": {
+        "type": "local",
+        "command": ["npx", "-y", "@playwright/mcp@latest", "--isolated", "--headless"],
+        "disabled": false,
+      },
     },
   },
 }
