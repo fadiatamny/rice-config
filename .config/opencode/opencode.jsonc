@@ -12,6 +12,7 @@
   // Do not pre-approve broad tool or shell permissions. OpenCode's defaults keep
   // routine work prompt-free; non-negotiable operational limits are instructions.
   "providers": {
+    // OpenCode discovers additional locally installed Ollama models automatically.
     "ollama": {
       "name": "Ollama (local)",
       "settings": {
@@ -26,7 +27,6 @@
   "instructions": [
     "~/.ai-development/POLICY.md",
   ],
-  // OpenCode discovers additional locally installed Ollama models automatically.
   "skills": ["~/.ai-development/skills"],
   "websearch": {
     // Select any connected OpenCode web provider and fail over on rate limits.
@@ -43,6 +43,12 @@
       },
       "playwright": {
         "type": "local",
+        // Remove "--isolated" for a persistent profile; optionally add
+        // "--user-data-dir", "/absolute/path/to/profile" for a separate profile.
+        // Concurrent browser instances cannot share a persistent profile.
+        // Add "--browser", "firefox" (or "chrome", "webkit", "msedge").
+        // Add "--executable-path", "/absolute/path/to/browser" for a custom executable.
+        // The selected browser must be installed; custom executable compatibility is not guaranteed.
         "command": ["npx", "-y", "@playwright/mcp@latest", "--isolated"],
         "disabled": false,
       },
