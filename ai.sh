@@ -197,19 +197,10 @@ install_opencode() {
 # ─── Deploy OpenCode configuration ────────────────────────────────────────────
 cleanup_legacy_opencode() {
     local dest="$1"
-    local agents_dest="$dest/agents"
 
     # Only remove paths previously managed by this repository.
     rm -rf "$dest/skills/fadi"
     rmdir "$dest/skills" 2>/dev/null || true
-    rm -f "$agents_dest/orchestrator.md"
-    rm -f "$agents_dest/architect.md"
-    rm -f "$agents_dest/developer.md"
-    rm -f "$agents_dest/reviewer.md"
-    rm -f "$agents_dest/janitor.md"
-    rm -f "$agents_dest/summarizer.md"
-    rm -f "$agents_dest/requirements-analyst.md"
-    rm -f "$agents_dest/implementation-worker.md"
 }
 
 deploy_opencode_configs() {
@@ -219,6 +210,11 @@ deploy_opencode_configs() {
     if [[ ! -d "$src" || -z "$(ls -A "$src")" ]]; then
         warn "No opencode configs found in $src — skipping"
         return 0
+    fi
+
+    # Existing file-based agents can conflict with directly configured agents.
+    if [[ -d "$dest/agents" ]]; then
+        warn "Existing OpenCode agent files in $dest/agents are preserved; review conflicts and clean up manually if desired."
     fi
 
     if [[ "$UPDATE_MODE" == true ]]; then
@@ -239,9 +235,6 @@ deploy_opencode_configs() {
 deploy_ai_development() {
     local src="$AI_DIR/.ai-development"
     local dest="$HOME/.ai-development"
-    local agents_src="$dest/agents"
-    local agents_dest="$HOME/.config/opencode/agents"
-    local agent_file persona_file agent_name target
 
     if [[ ! -d "$src" || -z "$(ls -A "$src")" ]]; then
         warn "No AI development definitions found in $src — skipping"
@@ -260,29 +253,6 @@ deploy_ai_development() {
         cp -R -n "$src/." "$dest/"
         success "Missing AI development definitions added to $dest"
     fi
-
-    mkdir -p "$HOME/.config/opencode"
-    mkdir -p "$agents_dest"
-
-    for agent_file in "$agents_src"/*/AGENT.md; do
-        [[ -f "$agent_file" ]] || continue
-        persona_file="$(dirname "$agent_file")/PERSONA.md"
-        agent_name="$(basename "$(dirname "$agent_file")")"
-        target="$agents_dest/$agent_name.md"
-
-        if [[ ! -f "$persona_file" ]]; then
-            warn "Missing persona for $agent_name — skipping"
-        elif [[ -e "$target" && "$UPDATE_MODE" != true ]]; then
-            success "OpenCode agent $agent_name already exists — preserving"
-        else
-            {
-                cat "$agent_file"
-                echo ""
-                cat "$persona_file"
-            } > "$target"
-            success "Generated OpenCode agent $agent_name"
-        fi
-    done
 }
 
 # ─── Pull Ollama models ───────────────────────────────────────────────────────
@@ -319,6 +289,20 @@ main() {
     echo ""
 
     if [[ "$UPDATE_MODE" == true ]]; then
+        warn 'Update may overwrite or delete contents of ~/.ai-development, including your user configuration.'
+        warn 'Matching files in ~/.config/opencode may be overwritten; legacy skills/fadi may be removed. Existing agent files are preserved.'
+        if [[ ! -t 0 ]]; then
+            error "Update requires interactive confirmation; no changes made."
+            return 1
+        fi
+        local choice
+        echo -en "  ${BOLD}Proceed with update? [y/N]:${RESET} "
+        if ! read -r choice || [[ ! "$choice" =~ ^([Yy]|[Yy][Ee][Ss])$ ]]; then
+            echo ""
+            info "Update cancelled; no changes made."
+            return 1
+        fi
+        echo ""
         info "Updating managed AI configuration only..."
         deploy_opencode_configs
         deploy_ai_development

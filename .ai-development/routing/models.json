@@ -1,0 +1,8 @@
+{
+  "extra": "openai/gpt-6.2-astra#high",
+  "ultra": "openai/gpt-6.2-astra#high",
+  "high": "openai/gpt-6.2-sol#high",
+  "medium": "openai/gpt-6.2-sol#medium",
+  "low": "openai/gpt-6.1-terra#high",
+  "quick": "openai/gpt-6.1-terra#medium"
+}

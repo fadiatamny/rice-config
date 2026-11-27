@@ -1,6 +1,86 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "default_agent": "orchestrator",
+  "agents": {
+    "architect": {
+      "description": "Architecture planner. Keywords: analyst, specifier, planner. Defines acceptance criteria, dependencies, and safe work boundaries without editing.",
+      "mode": "subagent",
+      "color": "#4aa3ff",
+      "system": "{file:~/.ai-development/agents/architect/PERSONA.md}",
+      "permissions": [
+        {"action": "edit", "resource": "*", "effect": "deny"},
+        {"action": "shell", "resource": "*", "effect": "deny"},
+        {"action": "webfetch", "resource": "*", "effect": "deny"},
+        {"action": "websearch", "resource": "*", "effect": "deny"},
+        {"action": "ddg-search_*", "resource": "*", "effect": "deny"},
+        {"action": "opencode_*", "resource": "*", "effect": "deny"},
+        {"action": "execute", "resource": "*", "effect": "deny"},
+        {"action": "question", "resource": "*", "effect": "deny"},
+        {"action": "subagent", "resource": "*", "effect": "deny"},
+      ],
+    },
+    "developer": {
+      "description": "Focused developer. Keywords: builder, implementer, worker. Implements one isolated, explicitly scoped task with fresh file context.",
+      "mode": "subagent",
+      "color": "#3ddc84",
+      "system": "{file:~/.ai-development/agents/developer/PERSONA.md}",
+      "permissions": [
+        {"action": "subagent", "resource": "*", "effect": "deny"},
+        {"action": "question", "resource": "*", "effect": "deny"},
+      ],
+    },
+    "explorer": {
+      "description": "Dedicated research subagent. Keywords: researcher, investigator, diagnostician. Deep primary-source web research and code, SQL, and operations questions; returns compact research handovers to Orchestrator.",
+      "mode": "subagent",
+      "color": "#00d1c1",
+      "system": "{file:~/.ai-development/agents/explorer/PERSONA.md}",
+      "permissions": [
+        {"action": "subagent", "resource": "*", "effect": "deny"},
+        {"action": "subagent", "resource": "explorer", "effect": "allow"},
+        {"action": "opencode_*", "resource": "*", "effect": "deny"},
+        {"action": "execute", "resource": "*", "effect": "deny"},
+      ],
+    },
+    "janitor": {
+      "description": "Final feature guard. Keywords: auditor, verifier, cleanup. Reviews work, identifies gaps, and applies in-scope low-risk fixes.",
+      "mode": "subagent",
+      "color": "#ff5c5c",
+      "system": "{file:~/.ai-development/agents/janitor/PERSONA.md}",
+      "permissions": [
+        {"action": "shell", "resource": "*", "effect": "deny"},
+        {"action": "webfetch", "resource": "*", "effect": "deny"},
+        {"action": "websearch", "resource": "*", "effect": "deny"},
+        {"action": "ddg-search_*", "resource": "*", "effect": "deny"},
+        {"action": "opencode_*", "resource": "*", "effect": "deny"},
+        {"action": "execute", "resource": "*", "effect": "deny"},
+        {"action": "question", "resource": "*", "effect": "deny"},
+        {"action": "subagent", "resource": "*", "effect": "deny"},
+      ],
+    },
+    "orchestrator": {
+      "description": "Primary mission owner. Keywords: conductor, planner, dispatcher. Owns all research, daily, repository, and implementation work; coordinates specialists when needed.",
+      "mode": "primary",
+      "color": "#f5a623",
+      "system": "{file:~/.ai-development/agents/orchestrator/PERSONA.md}",
+      "permissions": [
+        {"action": "subagent", "resource": "*", "effect": "deny"},
+        {"action": "subagent", "resource": "architect", "effect": "allow"},
+        {"action": "subagent", "resource": "developer", "effect": "allow"},
+        {"action": "subagent", "resource": "janitor", "effect": "allow"},
+        {"action": "subagent", "resource": "summarizer", "effect": "allow"},
+        {"action": "subagent", "resource": "explorer", "effect": "allow"},
+      ],
+    },
+    "summarizer": {
+      "description": "Milestone reporter. Keywords: scribe, reporter, handoff. Produces concise summaries from implementation and review reports.",
+      "mode": "subagent",
+      "color": "#b48ead",
+      "system": "{file:~/.ai-development/agents/summarizer/PERSONA.md}",
+      "permissions": [
+        {"action": "*", "resource": "*", "effect": "deny"},
+      ],
+    },
+  },
   "compaction": {
     // Compact only when explicitly requested at a user-defined milestone.
     "auto": false,
