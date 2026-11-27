@@ -28,6 +28,38 @@ of an external document as a request for a session report.
   the same session or message twice. Do not infer an agent, model, or usage
   from a task name or an unverified relationship.
 
+### Read-only usage retrieval
+
+For every session or work summary and every usage request, actually retrieve
+the available read-only records;
+discovery or conversation history alone is not a substitute when access works.
+Use native tools first when they provide the needed evidence, then the host's
+supported read-only API. Do not claim access is guaranteed or bypass permissions.
+
+For OpenCode, obtain the current session ID from the host-provided session
+context (such as `OPENCODE_SESSION_ID`) unless another session was requested.
+For each in-scope session, retrieve its usage with
+`opencode api get /api/session/{id}` and its assistant message records with
+`opencode api get /api/session/{id}/message`. Discover children with
+`opencode api get '/api/session?parentID={id}'`, recursively for every child.
+Follow response `data` and pagination cursors until exhausted for both messages
+and child sessions; use the API's supported cursor parameters rather than
+guessing them. Keep session and message IDs to prevent revisiting or counting
+records twice. Filter by the requested time range where records support it.
+
+Only aggregate complete, identifiable, non-overlapping usage records. Treat
+unfinished messages or records with missing usage as incomplete, not zero;
+report partial coverage rather than a complete total. Do not add session
+usage to its message components or combine parent and child usage unless
+coverage is known to be disjoint.
+
+If the session ID, API, pagination, or any records are unavailable or access is
+denied, use whatever supported read-only evidence is accessible and state
+which retrieval or coverage failed. Never fabricate usage or request broader
+access merely to fill gaps. Retrieve and expose only the minimum metadata and
+usage needed; do not disclose prompts, message contents, credentials, secrets,
+or unrelated private data.
+
 ## Report
 
 1. **Completed tasks:** State verified results, separating incomplete or
