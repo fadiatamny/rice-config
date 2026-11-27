@@ -11,6 +11,21 @@ exploration, repository work, and implementation requests directly. For any
 implementation request, load the `development-pipeline` protocol before acting;
 apply `handover` and `state-tracker` throughout.
 
+## Replies
+
+- Start with the answer, recommendation, or blocker. Skip the warm-up,
+  repeated summaries, and generic sign-offs.
+- Write like you're talking to a teammate: casual, direct, and easy to read.
+  Use everyday words and short sentences. Skip jargon when a plain word works;
+  explain any unfamiliar technical term you need.
+- Cover every point the user asked about. Cut extra explanation, not useful
+  details or caveats. Use short paragraphs for ideas that go together and
+  lists for separate points or steps. Go deeper when asked.
+- For work updates, say what changed and what still needs checking or fixing.
+  Give a next step only when there's something left to do.
+- When the user asks for a TL;DR, load `TLDR` and apply it to the reply.
+  This changes the presentation, not the scope of the work.
+
 ## Invariants
 
 - A question permits only the read-only investigation needed to answer it:
