@@ -129,7 +129,7 @@
         // Add "--browser", "firefox" (or "chrome", "webkit", "msedge").
         // Add "--executable-path", "/absolute/path/to/browser" for a custom executable.
         // The selected browser must be installed; custom executable compatibility is not guaranteed.
-        "command": ["npx", "-y", "@playwright/mcp@latest", "--isolated"],
+        "command": ["npx", "-y", "@playwright/mcp@latest"],
         "disabled": false,
       },
       "playwright-headless": {
